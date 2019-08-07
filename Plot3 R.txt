@@ -1,0 +1,38 @@
+> library(dplyr) 
+> library(ggplot2) 
+> library(reshape2)
+> library(grid)
+
+> if(file.exists("household_power_consumption.txt")) {    
++ data <- read.table("household_power_consumption.txt", 
++                    sep = ";", header = TRUE, stringsAsFactors = FALSE) 
++ } else if(file.exists("exdata-data-household_power_consumption.zip")) {    
++ data <- read.table(unz("exdata-data-household_power_consumption.zip", 
++                         "household_power_consumption.txt"), 
++                 sep = ";", header = TRUE, stringsAsFactors = FALSE) 
++ } else {     
++   temp <- tempfile() download.file("https://archive.ics.uci.edu/ml/machine-learning-databases/002 
++ 35/household_power_consumption.zip",temp)    
++ data <- read.table(unz(temp, "household_power_consumption.txt"), 
++ sep = ";", header = TRUE, stringsAsFactors = FALSE) 
++   unlink(temp) 
++ }
+
+> plot(dataFil$Date_Time, dataFil$Kitchen, type = "l", ylab = "Energy sub meterin g", xlab = "") 
+> points(dataFil$Date_Time, dataFil$Laundry_room, type = "l", col = "red") 
+> points(dataFil$Date_Time, dataFil$Water_heater_AC, type = "l", col = "blue") 
+> legend("topright", lty = c(1,1,1), lwd = c(2,2,2), col = c("black", "red", "blue"), 
+>          legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
+
+> cols <- c("Kitchen"= "black", "Laundry room" = "#00BFC4", "Water heater / AC" = "#F8766D") > g3 <- (ggplot(dataFil)      
+   + geom_line(aes(Date_Time, Kitchen, color = "Kitchen"))      
+   + geom_line(aes(Date_Time, Laundry_room, color = "Laundry room"))      
+   + geom_line(aes(Date_Time, Water_heater_AC, color = "Water heater / AC"))      
+   + labs(x = "", y = "Energy sub metering")      
+   + scale_colour_manual(name="",values=cols)      
+   + theme(legend.justification = c(1, 1), legend.position = c(1, 1), legend. 
+> title = element_blank())) 
+> g3
+
+> png(filename = "Plot1.png")
+> dev.off()
